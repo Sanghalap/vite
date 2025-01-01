@@ -149,6 +149,30 @@ Now the `preview` command will launch the server at `http://localhost:8080`.
        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
    ```
 
+Instead of altering vite.config.js, you can pass --base=$CI_PAGES_URL to vite build in the .gitlab-ci.yml to set the URL dynamically : 
+
+   ```yaml [.gitlab-ci.yml]
+   image: node:16.5.0
+   pages:
+     stage: deploy
+     cache:
+       key:
+         files:
+           - package-lock.json
+         prefix: npm
+       paths:
+         - node_modules/
+     script:
+       - npm install
+       - npm run build --base=$CI_PAGES_URL
+       - cp -a dist/. public/
+     artifacts:
+       paths:
+         - public
+     rules:
+       - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+   ```
+
 ## Netlify
 
 ### Netlify CLI
